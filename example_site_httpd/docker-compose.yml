@@ -1,0 +1,29 @@
+version: '2.3'
+
+services:
+
+  # Example with volume mounts, routing and env vars.
+  httpd:
+    image: httpd:latest
+    volumes:
+      - ./html:/var/www/html
+    environment:
+      MY_CUSTOM_ENV_VAR: "i_am_passed_to_container_runtime"
+    networks:
+      - gateway
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`website-httpd.example.local`)"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+
+  # Example second image (same network as above, referenced on that network by `varnish`)
+  varnish:
+    image: varnish:latest
+    networks:
+      - gateway
+      - default
+
+networks:
+  gateway:
+    external: true

@@ -1,0 +1,20 @@
+# Start with an image close to what we need
+FROM fauria/lamp:latest as builder
+
+# Pull in ENV vars defined in docker compose
+ARG PROJECT_VERSION
+ARG CLIENT_SECRET
+
+# Ref a variable from the compose file
+RUN echo "Building ${PROJECT_VERSION}"
+
+# Add some deps, run as one liner to keep image slim.
+RUN apt-get update && \
+    apt-get install -y cowsay && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copy some files in from local
+COPY ./html /var/www/html
+
+# Add a file to the web root
+RUN echo "I woz ere" > /var/www/html/here.html

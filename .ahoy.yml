@@ -1,0 +1,30 @@
+---
+ahoyapi: v2
+
+entrypoint:
+  - bash
+  - "-c"
+  - "-e"
+  - |
+    [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
+    bash -e -c "$0" "$@"
+  - '{{cmd}}'
+  - '{{name}}'
+
+commands:
+
+  host-up:
+    usage: Up host.
+    cmd: cd host && docker-compose up -d "$@"
+
+  host-down:
+    usage: Down host.
+    cmd: cd host && docker-compose down
+
+  up:
+    usage: Up project, second paramater should be project folder name.
+    cmd: cd "$@" && docker-compose -d up
+
+  down:
+    usage: Down project, second paramater should be project folder name.
+    cmd: cd "$@" && docker-compose down

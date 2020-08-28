@@ -1,0 +1,34 @@
+---
+ahoyapi: v2
+
+entrypoint:
+  - bash
+  - "-c"
+  - "-e"
+  - |
+    [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
+    bash -e -c "$0" "$@"
+  - '{{cmd}}'
+  - '{{name}}'
+
+commands:
+
+  build:
+    usage: Build project
+    cmd: docker-compose up -d --build
+
+  up:
+    usage: Up project
+    cmd: docker-compose -d up
+
+  down:
+    usage: Down project
+    cmd: docker-compose down
+ 
+  exec:
+    usage: Execute a command in the cli image
+    cmd: docker-compose exec -it cli "$@"
+
+  bash:
+    usage: Bash in the cli image
+    cmd: ahoy exec bash
